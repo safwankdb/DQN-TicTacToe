@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 def checkwinner(board):
-    if 0 not in list(np.ravel(board)):
+    if 0 in list(np.ravel(board)):
         return 0
     win = [3, -3]
     winners = {3: 1, -3: 2}
