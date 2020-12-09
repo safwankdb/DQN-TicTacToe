@@ -40,23 +40,27 @@ def checkwinner(board):
     return None
 
 
-def start_competition(address1, address2, episodes):
+def start_competition(address1, address2, episodes, noswap):
     episode = 0
     winners = []
     for episode in range(episodes):
-        swap = random.random() > 0.5
-        if swap:
-            a1 = address2
-            a2 = address1
+        if not noswap:
+            swap = random.random() > 0.5
+            if swap:
+                a1 = address2
+                a2 = address1
+            else:
+                a1 = address1
+                a2 = address2
+            asyncio.get_event_loop().run_until_complete(
+                connect_agent(a1, a2, winners, episode, swap))
         else:
-            a1 = address1
-            a2 = address2
-        asyncio.get_event_loop().run_until_complete(
-            connect_agent(a1, a2, winners, episode, swap))
+            asyncio.get_event_loop().run_until_complete(
+                connect_agent(address1, address2, winners, episode, 0))
         last_n = winners[-min(500, len(winners)):]
-        print("Epsiode {} Cumulative Score: {} - {} - {}".format(episode,
-                                                                 last_n.count(1), last_n.count(2), last_n.count(0)))
-    print("Player 1 won {} times, Player 2 won {} times and Draw occured {} times".format(
+        print("Epsiode {} Cumulative Score: {} - {} - {}".format(
+            episode, last_n.count(1), last_n.count(2), last_n.count(0)))
+    print("Player 1 won {}, Player 2 won {} and Draw occured {} times".format(
         winners.count(1), winners.count(2), winners.count(0)))
 
 
@@ -142,6 +146,8 @@ def main(argv=None):
                         default=0, help='Quiet output')
     parser.add_argument('--episodes', '-e', type=int,
                         default=200, help='Number of episodes')
+    parser.add_argument('--noswap', action='store_true',
+                        help='Dont swap players')
     parser.add_argument('agents', nargs=2, metavar='AGENT',
                         help='Websockets addresses for agents')
     args = parser.parse_args(argv)
@@ -150,7 +156,8 @@ def main(argv=None):
         max(logging.INFO - 10 * (args.verbose - args.quiet), logging.DEBUG))
     logger.addHandler(logging.StreamHandler(sys.stdout))
 
-    start_competition(args.agents[0], args.agents[1], args.episodes)
+    start_competition(args.agents[0], args.agents[1],
+                      args.episodes, args.noswap)
 
 
 if __name__ == "__main__":
