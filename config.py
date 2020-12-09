@@ -1,11 +1,11 @@
-REPLAY_SIZE = 20_000
-WARMUP_SIZE = 10_000
+REPLAY_SIZE = 25_000
+WARMUP_SIZE = 2_000
 GAMMA = 0.9
-TARGET_UPDATE = 100
+TARGET_UPDATE = 10
 BATCH_SIZE = 32
 
 EPS_START = 1
-DECAY_LEN = 1_000
+DECAY_LEN = 2_000
 EPS_END = 0.05
 SAVE_EVERY = 4_000
 
@@ -24,10 +24,10 @@ class ScaleLayer(nn.Module):
 
 def create_model(ins, outs):
     model = nn.Sequential(
-        nn.Linear(ins, 32),
+        nn.Linear(ins, 16),
         nn.ReLU(),
-        nn.Linear(32, 64),
+        nn.Linear(16, 32),
         nn.ReLU(),
-        nn.Linear(64, 9),
+        nn.Linear(32, 9),
     )
     return model

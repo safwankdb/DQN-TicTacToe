@@ -131,8 +131,6 @@ async def connect_agent(uri1, uri2, winners, episode, sort_key):
 
 
 def user_action(r, c, cur_player, board):
-    assert r in [0, 1, 2]
-    assert c in [0, 1, 2]
     board[r, c] = {1: 1, 2: -1}[cur_player]
     return 3 - cur_player
 
