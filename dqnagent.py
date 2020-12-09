@@ -37,18 +37,28 @@ class DQNAgent:
         self.EPSILON = EPS_END + (EPS_START - EPS_END)*(1-(episode/DECAY_LEN))
         self.EPSILON = max(self.EPSILON, EPS_END)
         self.n_states = 9
-        self.state = np.zeros(self.n_states)
+        self.state = np.zeros(self.n_states, dtype=np.int)
         self.player = player
         self.reward = 0
         self.prev_state = None
-        self.dqn = DQN(self.n_states, self.n_states)
+        self.dqn = DQN(3*self.n_states, self.n_states)
+
+    def get_feature(self, state):
+        feature = np.zeros(3*self.n_states)
+        if self.player == 1:
+            for i, s in enumerate(state):
+                feature[s*self.n_states+i] = 1
+        else:
+            for i, s in enumerate(state):
+                feature[{0: 0, 1: 2, 2: 1}[s]*self.n_states+i] = 1
+        return feature
 
     def reset(self, player, episode):
         self.episode = episode
         self.EPSILON = EPS_END + (EPS_START - EPS_END)*(1-(episode/DECAY_LEN))
         self.EPSILON = max(self.EPSILON, EPS_END)
         self.reward = 0
-        self.state = np.zeros(self.n_states)
+        self.state = np.zeros(self.n_states, dtype=np.int)
         self.prev_state = None
         self.player = player
         if (episode + 1) % SAVE_EVERY == 0:
@@ -58,22 +68,24 @@ class DQNAgent:
     def process_next_state(self):
         if self.prev_state is None:
             return
-        self.dqn.memorize(self.prev_state, self.action,
-                          self.reward, self.state)
+        x = self.get_feature(self.prev_state)
+        x_ = self.get_feature(self.state)
+        self.dqn.memorize(x, self.action, self.reward, x_)
         self.dqn.train()
 
     def register_action(self, row, column, player):
         flag = self.player == player
         if flag:
             self.prev_state = self.state.copy()
-        self.state[3*row+column] = {True: 1, False: -1}[flag]
+        self.state[3*row+column] = self.player
 
     def next_action(self):
         free_lines = [i for i in range(len(self.state)) if self.state[i] == 0]
         if len(free_lines) == 0:
             return None
         if np.random.random_sample() > self.EPSILON:
-            moves = np.argsort(self.dqn.predict(self.state))
+            x = self.get_feature(self.state)
+            moves = np.argsort(self.dqn.predict(x))
             idx = len(moves) - 1
             self.reward = 0
             while moves[idx] not in free_lines:
@@ -90,13 +102,14 @@ class DQNAgent:
 
     def end_game(self, winner):
         if winner == self.player:
-            self.reward += 1
+            self.reward += 100
         elif winner == 0:
             self.reward += 0
         else:
-            self.reward += -1
-        self.dqn.memorize(self.prev_state, self.action,
-                          self.reward, self.state, done=True)
+            self.reward += -100
+        x = self.get_feature(self.prev_state)
+        x_ = self.get_feature(self.state)
+        self.dqn.memorize(x, self.action, self.reward, x_, done=True)
         self.dqn.train(terminal=True)
 
 
