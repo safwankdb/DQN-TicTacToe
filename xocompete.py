@@ -19,8 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 def checkwinner(board):
-    if 0 in list(np.ravel(board)):
-        return 0
     win = [3, -3]
     winners = {3: 1, -3: 2}
     for i in range(3):
@@ -37,6 +35,8 @@ def checkwinner(board):
     a = sum(board[i, 2-i] for i in range(3))
     if a in win:
         return winners[a]
+    if 0 not in list(np.ravel(board)):
+        return 0
     return None
 
 
