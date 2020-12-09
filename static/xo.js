@@ -35,22 +35,9 @@ function restart_game() {
   //console.log("Restarting game");
   cur_game = generateGuid();
   alertstring = "";
-  nb_cols = parseInt(document.getElementById('nb-cols').value);
-  if (nb_cols == "" || isNaN(nb_cols) || nb_cols < 1) {
-    nb_cols = 6;
-    alertstring += "Invalid number of columns, the default value of " + nb_cols.toString() + " is applied. ";
-  }
-  nb_rows = parseInt(document.getElementById('nb-rows').value);
-  if (nb_rows == "" || isNaN(nb_rows) || nb_rows < 1) {
-    nb_rows = 6;
-    alertstring += "Invalid number of rows, the default value of " + nb_rows.toString() + " is applied. ";
-
-  }
-  timelimit = parseFloat(document.getElementById('timelimit').value);
-  if (timelimit == "" || isNaN(timelimit) || timelimit < 0) {
-    timelimit = 0.5 ;
-    alertstring += "Invalid time limit, the default value of " + timelimit.toString() + " is applied. ";
-  }
+  nb_cols = 3;
+  nb_rows = 3;
+  timelimit = 10000;
   if (alertstring != ""){
     alert(alertstring);
   }
@@ -111,15 +98,12 @@ function user_click(cell, o) {
     game: cur_game,
     player: cur_player,
     nextplayer: cur_player,
-    score: [points[1], points[2]],
     location: [r, c],
-    orientation: o
   };
   data[r][c].p = cur_player;
-  cur_player = 3- cur_player;
+  cur_player = 3 - cur_player;
 
   msg["nextplayer"] = cur_player;
-  msg["score"] = [points[1], points[2]];
 
   update_board();
   let roundWon = check_win(data);
@@ -138,60 +122,59 @@ function check_win(data) {
   roundWon=0;
   // case 1
   let a = data[0][0].p, b = data[0][1].p, c = data[0][2].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   //middle row
   a = data[1][0].p, b = data[1][1].p, c = data[1][2].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   // bottom row
   a = data[2][0].p, b = data[2][1].p, c = data[2][2].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   // first col
   a = data[0][0].p, b = data[1][0].p, c = data[2][0].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   //second col
   a = data[0][1].p, b = data[1][1].p, c = data[2][1].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   // third col
   a = data[0][2].p, b = data[1][2].p, c = data[2][2].p;
-  console.log(data[2][2].p);
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   // main diag
   a = data[0][0].p, b = data[1][1].p, c = data[2][2].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   }
   // sec diag
   a = data[0][2].p, b = data[1][1].p, c = data[2][0].p;
-  if (a===b && b===c){
+  if (a===b && b===c && a != 0){
     roundWon = a;return roundWon;
   } 
   return roundWon;
 }
 
 var field_margin = 10;
-var cell_width = 40;
+var cell_width = 60;
 var cell_margin = 4;
-var player_height = 40;
-var width = 400;
+var player_height = 60;
+var width = 600;
 var height = 600;
 var line_width = 5;
 
 var player_color = [
   "#E6E6E6",
-  "#FC6666",
-  "#0F80FF"
+  "#FF0000",
+  "#0000FF"
 ];
 
 var svg = d3.select("#playing-area").append("svg")
@@ -210,21 +193,21 @@ var field = svg.append("g")
 
 
 function update_board() {
-  // PLAYERS - enter & update
-  var player_text = player.selectAll("text")
-    .data([cur_player, cur_player]);
+  // // PLAYERS - enter & update
+  // var player_text = player.selectAll("text")
+  //   .data([cur_player, cur_player]);
 
-  player_text = player_text.enter().append("text")
-    .attr("x", function(c, i) { return i * 100;})
-    .merge(player_text)
-      .text(function(c, i) {return "Player " + (i + 1) + ": "+points[i + 1];})
-      .attr("fill", function(c, i) {
-        if (c == i + 1) {
-          return player_color[c];
-        } else {
-          return player_color[0];
-        }
-      });
+  // player_text = player_text.enter().append("text")
+  //   .attr("x", function(c, i) { return i * 100;})
+  //   .merge(player_text)
+  //     .text(function(c, i) {return "Player " + (i + 1) + ": "+points[i + 1];})
+  //     .attr("fill", function(c, i) {
+  //       if (c == i + 1) {
+  //         return player_color[c];
+  //       } else {
+  //         return player_color[0];
+  //       }
+  //     });
 
   // ROWS - enter & update
   var rows = field.selectAll(".row")
@@ -253,7 +236,7 @@ function update_board() {
     .attr("class", "cell")
     .attr("rx", cell_margin)
     .attr("ry", cell_margin)
-    .attr("opacity", 0.25)
+    .attr("opacity", 0.5)
     .attr("x", cell_margin)
     .attr("y", cell_margin)
     .attr("width", cell_width - 2*cell_margin)
@@ -399,9 +382,7 @@ function start_connections() {
         msg = {
           "type": "start",
           "player": ii,
-          "timelimit": timelimit,
           "game": cur_game,
-          "grid": [nb_rows, nb_cols]
         };
         iagent.socket.send(JSON.stringify(msg));
       };}(i, agent));

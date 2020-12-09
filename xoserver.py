@@ -21,13 +21,9 @@ logger = logging.getLogger(__name__)
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
-        if self.path == "/demo":
+        if self.path == "/":
             self.send_response(302)
-            self.send_header("Location", "/static/demo.html")
-            self.end_headers()
-        elif self.path == "/":
-            self.send_response(302)
-            self.send_header("Location", "/static/dotsandboxes.html")
+            self.send_header("Location", "/static/xo.html")
             self.end_headers()
         return super().do_GET()
 
@@ -50,7 +46,7 @@ def start_server(port):
 def main(argv=None):
     parser = argparse.ArgumentParser(description='Start server to play Dots and Boxes')
     parser.add_argument('--verbose', '-v', action='count', default=0, help='Verbose output')
-    parser.add_argument('--quiet', '-q', action='count', default=0, help='Quiet output')
+    parser.add_argument('--quiet', '-q', action='count', default=1, help='Quiet output')
     parser.add_argument('port', metavar='PORT', type=int, help='Port to use for server')
     args = parser.parse_args(argv)
 
