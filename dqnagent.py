@@ -59,13 +59,14 @@ class DQNAgent:
         if self.prev_state is None:
             return
         self.dqn.memorize(self.prev_state, self.action,
-                          0, self.state)
+                          self.reward, self.state)
         self.dqn.train()
 
     def register_action(self, row, column, player):
-        if player == self.player:
+        flag = self.player == player
+        if flag:
             self.prev_state = self.state.copy()
-        self.state[3*row+column] = {True: 1, False: -1}[self.player == player]
+        self.state[3*row+column] = {True: 1, False: -1}[flag]
 
     def next_action(self):
         free_lines = [i for i in range(len(self.state)) if self.state[i] == 0]
@@ -74,7 +75,9 @@ class DQNAgent:
         if np.random.random_sample() > self.EPSILON:
             moves = np.argsort(self.dqn.predict(self.state))
             idx = len(moves) - 1
+            self.reward = 0
             while moves[idx] not in free_lines:
+                self.reward -= 10
                 idx -= 1
             movei = moves[idx]
         else:
@@ -87,11 +90,11 @@ class DQNAgent:
 
     def end_game(self, winner):
         if winner == self.player:
-            self.reward = 1
+            self.reward += 1
         elif winner == 0:
-            self.reward = 0
+            self.reward += 0
         else:
-            self.reward = -1
+            self.reward += -1
         self.dqn.memorize(self.prev_state, self.action,
                           self.reward, self.state, done=True)
         self.dqn.train(terminal=True)
