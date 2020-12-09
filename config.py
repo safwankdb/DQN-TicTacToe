@@ -23,19 +23,11 @@ class ScaleLayer(nn.Module):
 
 
 def create_model(ins, outs):
-    if ins <= 12:
-        n = 16
-    else:
-        n = 64
     model = nn.Sequential(
-        nn.Linear(ins, n),
-        nn.BatchNorm1d(n),
+        nn.Linear(ins, 32),
         nn.ReLU(),
-        nn.Linear(n, n),
-        nn.BatchNorm1d(n),
+        nn.Linear(32, 64),
         nn.ReLU(),
-        nn.Linear(n, outs),
-        nn.Tanh(),
-        ScaleLayer(),
+        nn.Linear(64, 9),
     )
     return model
