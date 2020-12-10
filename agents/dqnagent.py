@@ -41,17 +41,13 @@ class DQNAgent:
         self.player = player
         self.reward = 0
         self.prev_state = None
-        self.dqn = DQN(3*self.n_states, self.n_states)
+        self.dqn = DQN(3*self.n_states+1, self.n_states)
 
     def get_feature(self, state):
         feature = np.zeros((3,3,3))
-        if self.player == 1:
-            for i, s in enumerate(state):
-                feature[i//3][i%3][s] = 1
-        else:
-            for i, s in enumerate(state):
-                feature[i//3][i%3][{0:0,1:2,2:1}[s]] = 1
-        return feature
+        for i, s in enumerate(state):
+            feature[i//3][i%3][s] = 1
+        return list(feature.ravel())+[2*(self.player==1)-1]
 
     def reset(self, player, episode):
         self.episode = episode
@@ -74,10 +70,9 @@ class DQNAgent:
         self.dqn.train()
 
     def register_action(self, row, column, player):
-        flag = self.player == player
-        if flag:
+        if self.player == player:
             self.prev_state = self.state.copy()
-        self.state[3*row+column] = self.player
+        self.state[3*row+column] = {1:1,2:-1}[self.player]
 
     def next_action(self):
         free_lines = [i for i in range(len(self.state)) if self.state[i] == 0]
@@ -87,11 +82,15 @@ class DQNAgent:
             x = self.get_feature(self.state)
             moves = np.argsort(self.dqn.predict(x))
             idx = len(moves) - 1
-            self.reward = 0
+            reward = 0
             while moves[idx] not in free_lines:
-                self.reward -= 10
+                reward = -50
                 idx -= 1
             movei = moves[idx]
+            if reward < 0:
+                x = self.get_feature(self.state)
+                self.dqn.memorize(x, moves[-1], reward, x)
+                self.dqn.train()
         else:
             movei = np.random.choice(free_lines)
         movei = int(movei)
@@ -120,33 +119,36 @@ class DQNPlayer:
     def __init__(self, player):
         print(f"Running on device: {device.upper()}")
         self.n_states = 9
-        self.state = np.zeros(self.n_states)
+        self.state = np.zeros(self.n_states, dtype=np.int)
         self.player = player
-        self.model = create_model(self.n_states, self.n_states).to(device)
-        self.model.load_state_dict(torch.load('models/self_play_20000.pth'))
+        self.model = create_model(self.n_states+1, self.n_states).to(device)
+        self.model.load_state_dict(torch.load('models/self_play_32000.pth'))
         self.model.eval()
 
     def reset(self, player):
-        self.state = np.zeros(self.n_states)
+        self.state = np.zeros(self.n_states, dtype=np.int)
         self.player = player
 
     def process_next_state(self):
         pass
 
     def register_action(self, row, column, player):
-        if player == self.player:
-            self.prev_state = self.state.copy()
-        self.state[3*row+column] = {True: 1, False: -1}[self.player == player]
+        self.state[3*row+column] = {1:1,2:-1}[self.player]
+
+    def get_feature(self, state):
+        feature = np.zeros((3,3,3))
+        for i, s in enumerate(state):
+            feature[i//3][i%3][s] = 1
+        return list(feature.ravel())+[2*(self.player==1)-1]
 
     def next_action(self):
         free_lines = [i for i in range(len(self.state)) if self.state[i] == 0]
         if len(free_lines) == 0:
             return None
+        x = self.get_feature(self.state)
         with torch.no_grad():
-            x = torch.Tensor(self.state).unsqueeze(0).to(device)
-            out = self.model(x)[0].cpu()
-        print(out)
-        moves = np.argsort(out)
+            x = torch.Tensor(x).to(device).unsqueeze(0)
+            moves = np.argsort(self.model(x)[0].cpu())
         idx = len(moves) - 1
         while moves[idx] not in free_lines:
             idx -= 1
@@ -239,7 +241,7 @@ def start_server(port, test_bool):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description='Start agent to play Dots and Boxes')
+        description='Start agent to play XO')
     parser.add_argument('--verbose', '-v', action='count',
                         default=0, help='Verbose output')
     parser.add_argument('--quiet', '-q', action='count',
