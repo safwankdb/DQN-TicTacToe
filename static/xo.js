@@ -168,7 +168,7 @@ var cell_width = 60;
 var cell_margin = 4;
 var player_height = 60;
 var width = 240;
-var height = 240;
+var height = 300;
 var line_width = 5;
 
 var player_color = [
