@@ -44,13 +44,13 @@ class DQNAgent:
         self.dqn = DQN(3*self.n_states, self.n_states)
 
     def get_feature(self, state):
-        feature = np.zeros(3*self.n_states)
+        feature = np.zeros((3,3,3))
         if self.player == 1:
             for i, s in enumerate(state):
-                feature[s*self.n_states+i] = 1
+                feature[i//3][i%3][s] = 1
         else:
             for i, s in enumerate(state):
-                feature[{0: 0, 1: 2, 2: 1}[s]*self.n_states+i] = 1
+                feature[i//3][i%3][{0:0,1:2,2:1}[s]] = 1
         return feature
 
     def reset(self, player, episode):
