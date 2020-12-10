@@ -41,13 +41,10 @@ class DQNAgent:
         self.player = player
         self.reward = 0
         self.prev_state = None
-        self.dqn = DQN(3*self.n_states+1, self.n_states)
+        self.dqn = DQN(self.n_states+1, self.n_states)
 
     def get_feature(self, state):
-        feature = np.zeros((3,3,3))
-        for i, s in enumerate(state):
-            feature[i//3][i%3][s] = 1
-        return list(feature.ravel())+[2*(self.player==1)-1]
+        return list(state)+[2*(self.player==1)-1]
 
     def reset(self, player, episode):
         self.episode = episode
@@ -84,7 +81,7 @@ class DQNAgent:
             idx = len(moves) - 1
             reward = 0
             while moves[idx] not in free_lines:
-                reward = -50
+                reward = -20
                 idx -= 1
             movei = moves[idx]
             if reward < 0:
