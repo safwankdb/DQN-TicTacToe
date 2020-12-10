@@ -14,6 +14,7 @@ import uuid
 import time
 from tqdm import tqdm
 import numpy as np
+from matplotlib import pyplot as plt
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,7 @@ def checkwinner(board):
     return None
 
 
-def start_competition(address1, address2, episodes, noswap):
+def start_competition(address1, address2, episodes, noswap, show):
     episode = 0
     winners = []
     for episode in range(episodes):
@@ -62,6 +63,21 @@ def start_competition(address1, address2, episodes, noswap):
             episode, last_n.count(1), last_n.count(2), last_n.count(0)))
     print("Player 1 won {}, Player 2 won {} and Draw occured {} times".format(
         winners.count(1), winners.count(2), winners.count(0)))
+    if show:
+        winners = winners[:50*(len(winners)//50)]
+        winners = np.array(winners).reshape(-1,50)
+        d = np.sum(winners==0, axis=1)
+        w = np.sum(winners==1, axis=1)
+        l = np.sum(winners==2, axis=1)
+        plt.plot(d, label='Draws')
+        plt.plot(w, label='Wins')
+        plt.plot(l, label='Losses')
+        plt.legend()
+        plt.grid()
+        plt.xlabel("Stats of every 50 games")
+        plt.ylim(0, 50)
+        plt.show()       
+
 
 
 async def connect_agent(uri1, uri2, winners, episode, sort_key):
@@ -146,6 +162,8 @@ def main(argv=None):
                         default=200, help='Number of episodes')
     parser.add_argument('--noswap', action='store_true',
                         help='Dont swap players')
+    parser.add_argument('--show', action='store_true',
+                        help='Show the polt of wins over time')
     parser.add_argument('agents', nargs=2, metavar='AGENT',
                         help='Websockets addresses for agents')
     args = parser.parse_args(argv)
@@ -155,7 +173,7 @@ def main(argv=None):
     logger.addHandler(logging.StreamHandler(sys.stdout))
 
     start_competition(args.agents[0], args.agents[1],
-                      args.episodes, args.noswap)
+                      args.episodes, args.noswap, args.show)
 
 
 if __name__ == "__main__":
