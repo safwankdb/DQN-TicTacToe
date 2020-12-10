@@ -8,7 +8,7 @@ Can a neural network play XO? We try to find out using Deep Q Networks.
 - [x] Write  a xoserver.py and a frontend for human player.
 - [x] Write the DQN.
 - [x] Add convolutional architecture in DQN.
-- [ ] Write MiniMax agent.
+- [x] Write MiniMax agent.
 - [ ] Write AlphaBeta search tree agent.
 - [ ] Write Dueling DQN agent.
 
