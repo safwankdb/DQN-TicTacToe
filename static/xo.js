@@ -30,6 +30,7 @@ var nb_cols = 6;
 var nb_rows = 6;
 var data = new Array(0);
 var alertstring = "";
+var num_moves = 0;
 
 function restart_game() {
   //console.log("Restarting game");
@@ -45,6 +46,7 @@ function restart_game() {
   console.log("Starting game", cur_game);
   points = [0, 0, 0];
   cur_player = 1;
+  num_moves = 0;
   var old_length = 0;
   for (var ri=0; ri<nb_rows + 1; ri++) {
     if (ri >= data.length) {
@@ -89,6 +91,7 @@ function user_click(cell, o) {
     //console.log('Game ended, ignoring click');
     return;
   }
+  num_moves = num_moves + 1;
   console.log('User click', cell, o);
   var won_cell = false;
   var c = cell.c;
@@ -109,11 +112,37 @@ function user_click(cell, o) {
   let roundWon = check_win(data);
   if (roundWon != 0) {
     console.log("Won! ", roundWon);
+    // Show WIN
+    var player_text = player.selectAll("text")
+      .data([cur_player,]);
+
+    player_text = player_text.enter().append("text")
+      .attr("x", function(c, i) { return i * 100;})
+      .merge(player_text)
+        .text(function(c, i) {return "Player " + roundWon + " has won!";})
+        .attr("fill", "darkgreen");
+    
     // Game over
     cur_ended = true;
     msg.type = "end";
     msg.nextplayer = 0;
     msg.winner = roundWon;
+  } 
+  else if(num_moves==9) {
+    // Show Draw
+    var player_text = player.selectAll("text")
+      .data([cur_player,]);
+
+    player_text = player_text.enter().append("text")
+      .attr("x", function(c, i) { return i * 100;})
+      .merge(player_text)
+        .text("Draw")
+        .attr("fill", "darkgreen");
+
+    cur_end = true;
+    msg.type="draw"
+    msg.nextplayer=0;
+    msg.winner=0;
   }
   send_to_agents(msg);
 }
@@ -193,22 +222,6 @@ var field = svg.append("g")
 
 
 function update_board() {
-  // // PLAYERS - enter & update
-  // var player_text = player.selectAll("text")
-  //   .data([cur_player, cur_player]);
-
-  // player_text = player_text.enter().append("text")
-  //   .attr("x", function(c, i) { return i * 100;})
-  //   .merge(player_text)
-  //     .text(function(c, i) {return "Player " + (i + 1) + ": "+points[i + 1];})
-  //     .attr("fill", function(c, i) {
-  //       if (c == i + 1) {
-  //         return player_color[c];
-  //       } else {
-  //         return player_color[0];
-  //       }
-  //     });
-
   // ROWS - enter & update
   var rows = field.selectAll(".row")
     .data(data)
@@ -260,22 +273,6 @@ function update_board() {
     .attr("stroke-linecap", "round")
     .attr("stroke", function(cell) {return player_color[cell.t];});
 
-  cols_enter.append("path")
-    .attr("d", "M"+cell_margin+",0"+
-               "L"+(cell_width/2)+",-"+(cell_width/3)+
-               "L"+(cell_width-cell_margin)+",0"+
-               "L"+(cell_width/2)+","+(cell_width/3)+"Z")
-    .attr("stroke", "black")
-    .attr("stroke-width", 2)
-    .attr("opacity", "0");
-    // .on("click", function(cell) {
-    //   if (agents[cur_player].active == true) {
-    //     console.log("Ignoring click, automated agent")
-    //   } else {
-    //     user_click(cell, "h");
-    //   }
-    // });
-
   // VLINE - enter
   cols_enter.append("line")
     .attr("class", "vline")
@@ -285,22 +282,6 @@ function update_board() {
     .attr("x2", 0)
     .attr("stroke-linecap", "round")
     .attr("stroke", function(cell) {return player_color[cell.l];});
-
-  cols_enter.append("path")
-    .attr("d", "M0,"+cell_margin+
-               "L-"+(cell_width/3)+","+(cell_width/2)+
-               "L0,"+(cell_width-cell_margin)+
-               "L"+(cell_width/3)+","+(cell_width/2)+"Z")
-    .attr("stroke", "black")
-    .attr("stroke-width", 2)
-    .attr("opacity", "0");
-    // .on("click", function(cell) {
-    //   if (agents[cur_player].active == true) {
-    //     console.log("Ignoring click, automated agent");
-    //   } else {
-    //     user_click(cell, "v");
-    //   }
-    // });
 
   cols = cols_enter
     .merge(cols);
