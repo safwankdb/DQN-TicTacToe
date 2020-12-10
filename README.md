@@ -9,7 +9,7 @@ Can a neural network play XO? We try to find out using Deep Q Networks.
 - [x] Write the DQN.
 - [x] Add convolutional architecture in DQN.
 - [x] Write MiniMax agent.
-- [ ] Write AlphaBeta search tree agent.
+- [x] Write AlphaBeta search tree agent.
 - [ ] Write Dueling DQN agent.
 
 
