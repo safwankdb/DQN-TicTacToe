@@ -19,7 +19,7 @@ init = True
 agent = None
 
 
-class MinMaxAgent:
+class MiniMaxAgent:
 
     def __init__(self, player):
         self.player = player
@@ -113,7 +113,7 @@ async def handler(websocket, path):
         answer = None
         if msg["type"] == "start":
             if init:
-                agent = MinMaxAgent(msg["player"])
+                agent = MiniMaxAgent(msg["player"])
                 init = False
             else:
                 agent.reset(msg['player'])
