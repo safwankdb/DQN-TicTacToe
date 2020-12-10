@@ -1,4 +1,4 @@
-# XO (TicTacToe) Leaning Environment
+# XO (TicTacToe) Learning Environment
 
 A framework for testing reinforcement learning algorithms on the simple XO game. Designed for learning and testing reinforcement learning and tree search algorithms. Based on similar [environment for dots and boxes](https://github.com/wannesm/dotsandboxes).
 
