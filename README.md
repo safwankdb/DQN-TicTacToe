@@ -1,6 +1,9 @@
 # XO (TicTacToe) Leaning Environment
 
-A framework for testing reinforcement learning algorithms on the simple XO game. Can a neural network play XO? We try to find out using Deep Q Networks.
+A framework for testing reinforcement learning algorithms on the simple XO game. Designed for learning and testing reinforcement learning and tree search algorithms.
+
+![Frontend](img/game.png)
+
 
 ## TODO
 - [x] Write xocompete.py for playing 2 agents against each other.
@@ -11,6 +14,7 @@ A framework for testing reinforcement learning algorithms on the simple XO game.
 - [x] Write MiniMax agent.
 - [x] Write AlphaBeta search tree agent.
 - [ ] Write Dueling DQN agent.
+- [ ] Let Agents tell their names while playing.
 
 
 ## Details
