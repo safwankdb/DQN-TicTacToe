@@ -1,6 +1,6 @@
-# DQN XO (TicTacToe)
+# XO (TicTacToe) Leaning Environment
 
-Can a neural network play XO? We try to find out using Deep Q Networks.
+A framework for testing reinforcement learning algorithms on the simple XO game. Can a neural network play XO? We try to find out using Deep Q Networks.
 
 ## TODO
 - [x] Write xocompete.py for playing 2 agents against each other.
