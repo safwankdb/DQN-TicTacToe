@@ -72,7 +72,7 @@ class DQNAgent:
     def register_action(self, row, column, player):
         if self.player == player:
             self.prev_state = self.state.copy()
-        self.state[3*row+column] = {1:1,2:-1}[self.player]
+        self.state[3*row+column] = {1:1,2:-1}[player]
 
     def next_action(self):
         free_lines = [i for i in range(len(self.state)) if self.state[i] == 0]
@@ -133,7 +133,7 @@ class DQNPlayer:
         pass
 
     def register_action(self, row, column, player):
-        self.state[3*row+column] = {1:1,2:-1}[self.player]
+        self.state[3*row+column] = {1:1,2:-1}[player]
 
     def get_feature(self, state):
         feature = np.zeros((3,3,3))
