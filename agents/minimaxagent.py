@@ -92,7 +92,6 @@ class MiniMaxAgent:
     def next_action(self):
         move = self.search(self.board.copy(), True)[1]
         if move is None:
-            print(None)
             return
         r, c = move
         return int(r), int(c)
@@ -170,7 +169,7 @@ def start_server(port):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description='Start agent to play Dots and Boxes')
+        description='Start agent to play XO')
     parser.add_argument('--verbose', '-v', action='count',
                         default=0, help='Verbose output')
     parser.add_argument('--quiet', '-q', action='count',
