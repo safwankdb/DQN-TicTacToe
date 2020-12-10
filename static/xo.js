@@ -167,8 +167,8 @@ var field_margin = 10;
 var cell_width = 60;
 var cell_margin = 4;
 var player_height = 60;
-var width = 600;
-var height = 600;
+var width = 240;
+var height = 240;
 var line_width = 5;
 
 var player_color = [
