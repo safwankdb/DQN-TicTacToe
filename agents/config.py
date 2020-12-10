@@ -24,11 +24,11 @@ class ScaleLayer(nn.Module):
 
 def create_model(ins, outs):
     model = nn.Sequential(
-        nn.Conv2d(3, 32, 3, padding=1),
+        nn.Conv2d(3, 16, 3, padding=1),
         nn.ReLU(),
-        nn.Conv2d(32, 16, 3, padding=1),
+        nn.Conv2d(16, 8, 3, padding=1),
         nn.ReLU(),
         nn.Flatten(),
-        nn.Linear(16*3*3, outs),
+        nn.Linear(8*3*3, outs),
     )
     return model

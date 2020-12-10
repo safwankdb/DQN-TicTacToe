@@ -42,7 +42,7 @@ class DQN(nn.Module):
         self.model = create_model(self.n_states, n_actions).to(device)
         self.target_model = create_model(self.n_states, n_actions).to(device)
         self.target_model.eval()
-        self.opt = torch.optim.RMSprop(self.model.parameters(), 1e-3)
+        self.opt = torch.optim.RMSprop(self.model.parameters(), 5e-4)
         # self.loss = nn.SmoothL1Loss()
         self.loss = nn.MSELoss()
         self.target_counter = 0
