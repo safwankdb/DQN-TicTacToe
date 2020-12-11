@@ -27,6 +27,19 @@ $ python xoserver.py 8080
 - **minimaxagent**: Performs a full depth minimax tree search to find best moves, it can never lose.
 - **alphabetaagent**: Uses alpha beta pruning in tree search and finds sub-optimal moves.
 - **dqnagent**: Uses Deep Q Network to approximate the Q function and learns to play online.
+  
+<center>
+  
+|    Player 1 / Player 2       |  MiniMax  |  AlphaBeta  |    Random   |   Simple   |
+|:---------:|:---------:|:-----------:|:-----------:|:----------:|
+|  **MiniMax**  |  0-0-1000 |   1000-0-0  |   989-0-11  |  1000-0-0  |
+| **AlphaBeta** |  0-1000-0 |   1000-0-0  |  859-88-53  |  1000-0-0  |
+|   **Random**  | 0-815-185 | 208-598-194 | 582-310-108 | 545-427-28 |
+|   **Simple**  |  0-1000-0 |  765-180-55 |   0-1000-0  |  1000-0-0  |
+
+Number of games won/lost/drawn per 1000 games.
+</center>
+
 
 ## TODO
 - [x] Host the xoserver somewhere.
@@ -38,7 +51,7 @@ $ python xoserver.py 8080
 - [x] Write MiniMax agent.
 - [x] Write AlphaBeta search tree agent.
 - [ ] Write a simple Q learning agent.
-- [ ] Write a SARSA agent.
+- [ ] Write a SARSA agent.  
 - [ ] Write Dueling DQN agent.
 - [ ] Let Agents tell their names while playing.
 
