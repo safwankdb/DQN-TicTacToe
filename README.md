@@ -21,6 +21,13 @@ $ python xocompete.py ws://127.0.0.1:8081 ws://127.0.0.1:8082 --episodes 5000
 $ python xoserver.py 8080
 ```
 
+## Agents
+- **randomagent**: Chooses a move randomly from all valid moves.
+- **simpleagent**: Chooses the move with lowest index among valid moves.
+- **minimaxagent**: Performs a full depth minimax tree search to find best moves, it can never lose.
+- **alphabetaagent**: Uses alpha beta pruning in tree search and finds sub-optimal moves.
+- **dqnagent**: Uses Deep Q Network to approximate the Q function and learns to play online.
+
 ## TODO
 - [x] Host the xoserver somewhere.
 - [x] Write xocompete.py for playing 2 agents against each other.
@@ -30,6 +37,8 @@ $ python xoserver.py 8080
 - [x] Add convolutional architecture in DQN.
 - [x] Write MiniMax agent.
 - [x] Write AlphaBeta search tree agent.
+- [ ] Write a simple Q learning agent.
+- [ ] Write a SARSA agent.
 - [ ] Write Dueling DQN agent.
 - [ ] Let Agents tell their names while playing.
 
