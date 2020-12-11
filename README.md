@@ -4,6 +4,8 @@ A framework for testing reinforcement learning algorithms on the simple XO game.
 
 ![Frontend](img/game.png)
 
+The GUI live demo is at [safwankdb.github.io/xo](https://safwankdb.github.io/xo)
+
 ## Usage
 - #### Start the agents
 ```bash
@@ -20,6 +22,7 @@ $ python xoserver.py 8080
 ```
 
 ## TODO
+- [x] Host the xoserver somewhere.
 - [x] Write xocompete.py for playing 2 agents against each other.
 - [x] Write a random agent.
 - [x] Write  a xoserver.py and a frontend for human player.
