@@ -116,15 +116,3 @@ Number of games won/lost/drawn per 1000 games.
 - [ ] Write Dueling DQN agent.
 - [ ] Let Agents tell their names while playing.
 
-
-## Details
-Course project for EE782, IIT Bombay.
-
-### Team Members
-- Mohd Safwan 17D070047
-- Kumar Ashutosh 16D070043
-- Manas Vashistha 17D070064
-
-### Acknowledgement
-- Prof. Amit Sethi
-- E. Aakash for helping with the GUI. 
